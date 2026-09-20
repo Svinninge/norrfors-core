@@ -2,6 +2,14 @@
 
 Lärdomar, nyast överst.
 
+## 2026-09-20 — Ett delat bibliotek utan `py.typed` får mypy att ge upp i varje typad konsument
+
+Hittades vid första migreringen (ai-trading): `error: Skipping analyzing
+"norrfors_core.notify": module is installed, but missing library stubs or py.typed
+marker`. Paketet var fullt annoterat hela tiden — markören är det som säger åt mypy
+att tro på annoteringarna. Kräver både filen `norrfors_core/py.typed` och
+`[tool.setuptools.package-data]`, annars följer den inte med i bygget.
+
 ## 2026-09-20 — Tom sträng i secrets.env måste räknas som osatt, annars ser en blank rad ut som konfiguration
 
 Ärvt från dubblaren: `os.environ.get("SMTP_HOST")` returnerar `""` för en blank

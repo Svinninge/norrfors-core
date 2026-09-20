@@ -2,15 +2,16 @@
 
 ## Aktivt arbete (WIP)
 
-Inget pågående. `notify` är skriven och testad men **ingen konsument är migrerad**.
+Inget pågående.
 
 ## Backlog — migrering av konsumenter
 
 Ordningen är medveten: minst risk först, så flödet (installation, versionspinning,
 uppdatering på två datorer) är bevisat innan något större flyttar.
 
-1. **ai-trading** — `src/notifications/telegram.py` är tunnast. Behåller sin
-   `config_resolver` för per-användar-credentials och skickar in `chat_ids`.
+1. ~~**ai-trading**~~ — klart 2026-09-20 (v0.02). `telegram.py` är nu en adapter:
+   `config_resolver` stannar kvar, transporten är core:s. Signaturen oförändrad,
+   alla ~10 anropare orörda.
 2. **dubblaren** — `src/notify.py`. Behåller `job_failed()` och `send_test()`
    lokalt (projektspecifik dedupe och UI-text), anropar core för transporten.
    `sending_enabled()` blir `enabled=auth.is_production()`.

@@ -19,12 +19,13 @@ Python ≥ 3.10.
 
 ## Status
 
-v0.01 — `notify` är första modulen. Ingen konsument har migrerats ännu.
+v0.02 — `notify` är första modulen. Migrerad konsument: **ai-trading**.
+Kvar: dubblaren, finance (se `TODO.md`).
 
 ## Snabbstart
 
 ```bash
-pip install git+ssh://git@github.com/Svinninge/norrfors-core@v0.01
+pip install git+ssh://git@github.com/Svinninge/norrfors-core@v0.02
 ```
 
 ```python
@@ -34,7 +35,7 @@ config = NotifyConfig.from_env()
 notify("Nattjobbet är klart.", config=config, subject="Finance: nattkörning")
 ```
 
-Pinna versionen per projekt (`@v0.01`) och bumpa medvetet. Ett delat paket som
+Pinna versionen per projekt (`@v0.02`) och bumpa medvetet. Ett delat paket som
 följer main automatiskt går sönder i det projekt du inte tittade på.
 
 ### Konfiguration

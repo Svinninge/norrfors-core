@@ -1,8 +1,8 @@
-# File version: v0.01
+# File version: v0.02
 # Description: Package metadata for norrfors-core, the shared library for Per's projects
 # Author: Per Norrfors
 # Created: 2026-09-20
-# Modified: 2026-09-20 - Initial implementation (Claude)
+# Modified: 2026-09-20 - Ship py.typed so consumers' mypy sees the annotations (Claude)
 
 [build-system]
 requires = ["setuptools>=68"]
@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "norrfors-core"
-version = "0.1.0"
+version = "0.2.0"
 description = "Shared building blocks reused across Per Norrfors' projects"
 authors = [{ name = "Per Norrfors" }]
 requires-python = ">=3.10"
@@ -23,6 +23,11 @@ dev = ["pytest>=8"]
 
 [tool.setuptools.packages.find]
 include = ["norrfors_core*"]
+
+# py.typed ships the annotations to consumers. Without it mypy skips the
+# whole package in every typed project that imports it.
+[tool.setuptools.package-data]
+norrfors_core = ["py.typed"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
