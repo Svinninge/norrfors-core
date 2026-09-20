@@ -2,6 +2,18 @@
 
 Lärdomar, nyast överst.
 
+## 2026-09-20 — Ett konsumentprojekt som hämtar core som GIT-källa kräver git i sin runtime-image
+
+ai-tradings image-bygge failade efter migreringen: `cause: Git executable not
+found`. `python:3.12-slim` har ingen git, och `uv sync` skalar ut till git för ett
+git-beroende — CI passerade eftersom runnern har git, så felet syntes först i
+image-bygget efter merge till main.
+
+Använd en **tagg-pinnad tarball** i konsumenterna, inte en git-källa:
+`https://github.com/Svinninge/norrfors-core/archive/refs/tags/vX.YY.tar.gz`
+(uv: `[tool.uv.sources] norrfors-core = { url = "..." }`). Fungerar utan
+git-binär och är pinnad likadant. Alla tre konsumenterna gör så nu.
+
 ## 2026-09-20 — Ett delat bibliotek utan `py.typed` får mypy att ge upp i varje typad konsument
 
 Hittades vid första migreringen (ai-trading): `error: Skipping analyzing
