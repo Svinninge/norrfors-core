@@ -106,3 +106,52 @@ def test_html_email_wrapper_carries_branding_not_a_project_name():
     assert "<title>Mower</title>" in html
     assert "#065f46" in html and "<p>hej</p>" in html
     assert "Family Office" not in html
+
+
+def test_html_only_message_has_no_empty_text_part(monkeypatch):
+    """body=None must send text/html, not a blank text/plain a client would render."""
+    config = NotifyConfig.from_env({
+        "SMTP_HOST": "smtp.example.com", "EMAIL_FROM": "bot@example.com",
+        "EMAIL_TO": "a@example.com"})
+    sent = {}
+
+    class FakeSMTP:
+        def __init__(self, *a, **kw): pass
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def starttls(self, **kw): pass
+        def login(self, *a): pass
+        def send_message(self, message): sent["message"] = message
+
+    monkeypatch.setattr(notify.mail.smtplib, "SMTP", FakeSMTP)
+    assert notify.send_email("s", None, config=config, html="<p>hej</p>") is True
+    message = sent["message"]
+    assert message.get_content_type() == "text/html"
+    assert "hej" in message.get_content()
+
+
+def test_body_and_html_still_multipart(monkeypatch):
+    config = NotifyConfig.from_env({
+        "SMTP_HOST": "smtp.example.com", "EMAIL_FROM": "bot@example.com",
+        "EMAIL_TO": "a@example.com"})
+    sent = {}
+
+    class FakeSMTP:
+        def __init__(self, *a, **kw): pass
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def starttls(self, **kw): pass
+        def login(self, *a): pass
+        def send_message(self, message): sent["message"] = message
+
+    monkeypatch.setattr(notify.mail.smtplib, "SMTP", FakeSMTP)
+    assert notify.send_email("s", "text", config=config, html="<p>hej</p>") is True
+    types = {part.get_content_type() for part in sent["message"].walk()}
+    assert "text/plain" in types and "text/html" in types
+
+
+def test_neither_body_nor_html_is_refused():
+    config = NotifyConfig.from_env({
+        "SMTP_HOST": "smtp.example.com", "EMAIL_FROM": "bot@example.com",
+        "EMAIL_TO": "a@example.com"})
+    assert notify.send_email("s", None, config=config) is False

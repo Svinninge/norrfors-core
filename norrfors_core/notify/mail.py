@@ -1,8 +1,8 @@
-# File version: v0.01
+# File version: v0.02
 # Description: SMTP e-mail sender with plain/HTML alternatives and embedded images
 # Author: Per Norrfors
 # Created: 2026-09-20
-# Modified: 2026-09-20 - Initial implementation (Claude)
+# Modified: 2026-09-20 - body=None sends an HTML-only message (Claude)
 """Send one e-mail over SMTP.
 
 Stdlib ``smtplib`` on purpose: it is the pattern finance, dubblaren and ai-trading
@@ -39,7 +39,7 @@ def recipients(
 
 def send_email(
     subject: str,
-    body: str,
+    body: str | None,
     *,
     config: NotifyConfig,
     html: str | None = None,
@@ -49,6 +49,10 @@ def send_email(
 ) -> bool:
     """Send one e-mail. Returns True on success, False if e-mail is not configured
     or the send failed — both logged, never raised.
+
+    ``body`` is the plain-text part. Pass ``None`` to send an HTML-only message —
+    an empty text part makes a plain-text client render a blank mail. ``images``
+    then has no effect, since there is no alternative part to relate them to.
 
     ``images`` embeds pictures IN the message: ``{cid: (bytes, subtype)}``,
     referenced as ``<img src="cid:name">`` in ``html``. That is the only thing that
@@ -75,9 +79,19 @@ def send_email(
     message["Subject"] = subject
     message["From"] = config.email_from
     message["To"] = ", ".join(addresses)
-    message.set_content(body)
-    if html:
-        message.add_alternative(html, subtype="html")
+    if body is None:
+        # HTML-only: an empty text/plain part is worse than none at all — a client
+        # that prefers plain text would render a blank message rather than fall
+        # back to the HTML it can also read.
+        if not html:
+            log.info("E-mail has neither body nor html — skipping send: %s", subject)
+            return False
+        message.set_content(html, subtype="html")
+    else:
+        message.set_content(body)
+        if html:
+            message.add_alternative(html, subtype="html")
+    if html and body is not None:
         for cid, (data, subtype) in (images or {}).items():
             # add_related on the HTML part makes that part multipart/related, so the
             # image belongs to the alternative rather than to the message — a client

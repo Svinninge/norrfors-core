@@ -12,11 +12,11 @@ uppdatering på två datorer) är bevisat innan något större flyttar.
 1. ~~**ai-trading**~~ — klart 2026-09-20 (v0.02). `telegram.py` är nu en adapter:
    `config_resolver` stannar kvar, transporten är core:s. Signaturen oförändrad,
    alla ~10 anropare orörda.
-2. **dubblaren** — `src/notify.py`. Behåller `job_failed()` och `send_test()`
-   lokalt (projektspecifik dedupe och UI-text), anropar core för transporten.
-   `sending_enabled()` blir `enabled=auth.is_production()`.
-3. **finance** — `notify.py`, störst och mest sammanvävd. `TelegramMessage`,
-   `read_gmail()` och `family_users`-upplösningen stannar i finance.
+2. ~~**dubblaren**~~ — klart 2026-09-20 (PR #129). `notify.py` äger policyn,
+   core äger transporten. Publika ytan oförändrad.
+3. ~~**finance**~~ — klart 2026-09-20 (v0.03). `TelegramMessage`, `EmailMessage`,
+   `read_gmail()`, Svinninge-mallen och `family_users`-upplösningen stannade kvar.
+   Avslöjade att core saknade html-only-utskick.
 
 ## Backlog — nästa modul
 

@@ -23,6 +23,7 @@ import logging
 
 from .config import ENV_KEYS, NotifyConfig
 from .format import html_email_wrapper, md_to_html, split_message
+from . import mail
 from .mail import recipients, send_email
 from .telegram import send_telegram
 
@@ -32,6 +33,7 @@ __all__ = [
     "ENV_KEYS",
     "NotifyConfig",
     "html_email_wrapper",
+    "mail",
     "md_to_html",
     "notify",
     "recipients",

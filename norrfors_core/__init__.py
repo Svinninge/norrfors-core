@@ -11,4 +11,4 @@ the projects: they look alike but drift apart, and a shared copy of them would
 turn into a ball of flags.
 """
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
