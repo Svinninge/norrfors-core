@@ -1,0 +1,28 @@
+# File version: v0.01
+# Description: Package metadata for norrfors-core, the shared library for Per's projects
+# Author: Per Norrfors
+# Created: 2026-09-20
+# Modified: 2026-09-20 - Initial implementation (Claude)
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "norrfors-core"
+version = "0.1.0"
+description = "Shared building blocks reused across Per Norrfors' projects"
+authors = [{ name = "Per Norrfors" }]
+requires-python = ">=3.10"
+# No runtime dependencies on purpose: this package must install unchanged on the
+# NAS, on a Raspberry Pi and inside slim Docker images. Everything here is stdlib.
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+include = ["norrfors_core*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
